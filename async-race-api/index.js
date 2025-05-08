@@ -1,39 +1,7 @@
 const jsonServer = require('json-server');
-
-const db = {
-  garage: [
-    {
-      name: 'Tesla',
-      color: '#e6e6fa',
-      id: 1,
-    },
-    {
-      name: 'BMW',
-      color: '#fede00',
-      id: 2,
-    },
-    {
-      name: 'Mersedes',
-      color: '#6c779f',
-      id: 3,
-    },
-    {
-      name: 'Ford',
-      color: '#ef3c40',
-      id: 4,
-    },
-  ],
-  winners: [
-    {
-      id: 1,
-      wins: 1,
-      time: 10,
-    },
-  ],
-};
-
 const server = jsonServer.create();
-const router = jsonServer.router(db);
+const path = require('path');
+const router = jsonServer.router(path.join(__dirname, 'db.json')); 
 const middlewares = jsonServer.defaults();
 const cors = require('cors');
 
@@ -67,7 +35,7 @@ server.patch('/engine', (req, res) => {
       );
   }
 
-  if (!db.garage.find((car) => car.id === +id)) {
+  if (!router.db.get('garage').find({ id: +id }).value()) {
     return res
       .status(404)
       .send('Car with such id was not found in the garage.');
